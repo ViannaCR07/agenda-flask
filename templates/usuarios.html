@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Painel de Aprovação de Usuários</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
+    .container { background: white; padding: 20px; border-radius: 8px; max-width: 900px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background: #eee; }
+    input, select, button { padding: 6px 10px; margin: 4px 0; }
+    button { cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+    button:hover { background: #0056b3; }
+    .nav a { margin-right: 10px; text-decoration: none; color: #007bff; }
+    .nav a:hover { text-decoration: underline; }
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <h2>Usuários Pendentes de Aprovação</h2>
+        {% if mensagem %}
+            <p class="mensagem">{{ mensagem }}</p>
+        {% endif %}
+        {% if usuarios %}
+            <table border="1">
+                <tr>
+                    <th>Nome</th>
+                    <th>Usuário</th>
+                    <th>Setor</th>
+                    <th>Cargo</th>
+                    <th>Ações</th>
+                </tr>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u[3] }}</td>
+                    <td>{{ u[1] }}</td>
+                    <td>{{ u[4] }}</td>
+                    <td>{{ u[5] }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('aprovar_usuario') }}" style="display:inline;">
+                            <input type="hidden" name="id" value="{{ u[0] }}">
+                            <button type="submit">Aprovar</button>
+                        </form>
+                        <form method="post" action="{{ url_for('excluir_usuario') }}" style="display:inline;">
+                            <input type="hidden" name="id" value="{{ u[0] }}">
+                            <button type="submit" style="color:red;">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Nenhum usuário pendente.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

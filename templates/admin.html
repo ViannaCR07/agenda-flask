@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6f7;
+            padding: 40px;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 900px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        select, button {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #888;
+            padding: 6px;
+            font-size: 14px;
+        }
+        .btn-copy {
+            background: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-copy:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav" style="margin-bottom: 20px;">
+    <a href="{{ url_for('painel_turnos') }}">📋 Painel de Turnos</a> |
+    <a href="{{ url_for('admin_usuarios') }}">👤 Aprovação de Usuários</a> |
+    <a href="{{ url_for('admin') }}">🏠 Painel de Agendamentos</a>
+</div>
+
+    <div class="container">
+        <h2>Painel Administrativo - Agendamentos</h2>
+
+        <form method="get" action="{{ url_for('admin') }}">
+            <select name="data">
+                <option value="">Todas as datas</option>
+                {% for data in datas %}
+                    <option value="{{ data }}" {% if data == filtro_data %}selected{% endif %}>{{ data }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="turno">
+                <option value="">Todos os turnos</option>
+                {% for t in turnos %}
+                    <option value="{{ t }}" {% if t == filtro_turno %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="subpraca">
+                <option value="">Todas as subpraças</option>
+                {% for s in subpracas %}
+                    <option value="{{ s }}" {% if s == filtro_subpraca %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filtrar</button>
+        </form>
+
+        {% if agendamentos %}
+        <button class="btn-copy" onclick="copiarCpfs()">📋 Copiar CPFs</button>
+        <p id="cpfs" style="display: none;">{{ cpfs_formatados }}</p>
+        {% endif %}
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Praça</th>
+                <th>Subpraça</th>
+                <th>Data do Turno</th>
+                <th>Turno</th>
+            </tr>
+            {% for ag in agendamentos %}
+            <tr>
+                <td>{{ ag[0] }}</td>
+                <td>{{ ag[1] }}</td>
+                <td>{{ ag[2] }}</td>
+                <td>{{ ag[3] }}</td>
+                <td>{{ ag[4] }}</td>
+                <td>{{ ag[5] }}</td>
+                <td>{{ ag[6] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% if not agendamentos %}
+            <p><em>Nenhum agendamento encontrado com os filtros selecionados.</em></p>
+        {% endif %}
+    </div>
+
+    <script>
+        function copiarCpfs() {
+            const texto = document.getElementById("cpfs").textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("CPFs copiados com sucesso!");
+            });
+        }
+    </script>
+</body>
+</html>

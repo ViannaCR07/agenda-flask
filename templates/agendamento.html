@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendamento de Horário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin: 0.75rem 0 0.25rem;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .turnos {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        .turnos label {
+            font-weight: normal;
+            display: block;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .mensagem {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🕒 Agendamento de Horário</h2>
+    <form method="POST" action="/">
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" name="cpf" placeholder="Somente números" required>
+        <button type="submit" class="btn">Consultar</button>
+    </form>
+
+    {% if nome %}
+    <form method="POST" action="/confirmar">
+        <input type="hidden" name="cpf" value="{{ cpf }}">
+        <input type="hidden" name="subpraca" value="{{ subpraca }}">
+
+        <label>Nome:</label>
+        <input type="text" value="{{ nome }}" disabled>
+
+        <label>Praça:</label>
+        <input type="text" value="{{ praca }}" disabled>
+
+        <label>Data:</label>
+        <select name="data" required>
+            {% for data in datas %}
+            <option value="{{ data }}">{{ data }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="turnos">
+            <label>Turno:</label>
+            {% for turno in turnos %}
+            <label><input type="checkbox" name="turnos" value="{{ turno }}"> {{ turno }}</label>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn">Confirmar Agendamento</button>
+    </form>
+    {% endif %}
+
+    {% if mensagem %}
+    <div class="mensagem">{{ mensagem|safe }}</div>
+    {% endif %}
+</div>
+</body>
+</html>
